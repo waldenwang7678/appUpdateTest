@@ -1,4 +1,4 @@
-package com.walden.appupdatetest;
+package com.walden.appupdatetest.appupdate;
 
 import java.io.BufferedReader;
 import java.io.IOException;

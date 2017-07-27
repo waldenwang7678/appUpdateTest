@@ -1,4 +1,7 @@
-package com.walden.appupdatetest;
+package com.walden.appupdatetest.appupdate;
+
+import com.walden.appupdatetest.appupdate.UpdateDialog;
+
 /**
  * Created by walden on 2017/7/27.
  */

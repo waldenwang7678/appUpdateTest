@@ -1,16 +1,14 @@
-package com.walden.appupdatetest;
+package com.walden.appupdatetest.appupdate;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.walden.appupdatetest.R;
 
 /**
  * Created by wangjt on 2017/7/27.
@@ -86,7 +84,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         if (dialogType) {
             update_cancle.setVisibility(View.GONE);
             middle_line.setVisibility(View.GONE);
-            //setCancelable(false);
+            setCancelable(false);
         }
         confirmLayout.setVisibility(View.VISIBLE);
         progressLayout.setVisibility(View.GONE);
@@ -117,11 +115,17 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
     public void showProgress() {
         confirmLayout.setVisibility(View.GONE);
         progressLayout.setVisibility(View.VISIBLE);
-        progress_bar.setProgress(20);
+        //progress_bar.setProgress(20);
     }
 
     public boolean isForceUpdate() {
         return dialogType;
+    }
+    public ProgressBar getProgressBar(){
+        return progress_bar;
+    }
+    public TextView getProgresNum(){
+        return progress_num;
     }
 }
 

@@ -1,15 +1,13 @@
 package com.walden.appupdatetest;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.walden.appupdatetest.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.walden.appupdatetest.appupdate.UpdateDialog;
+import com.walden.appupdatetest.appupdate.UpdateUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,50 +41,8 @@ public class MainActivity extends AppCompatActivity {
         String type = typeEt.getText().toString();
         String tmpurl = type.length() > 0 ? url + "?updatetype=" + type : url;
 
-        HttpUtil.get(this, tmpurl, new HttpUtil.CallBack() {
-
-
-            @Override
-            public void success(String str) {
-                try {
-                    JSONObject result = new JSONObject(str);
-                    String versonCode = result.optString("updatetype");
-
-                    if (versonCode.equals("0")) {
-                        String extension = result.optString("extension");
-                        Toast.makeText(MainActivity.this, extension, Toast.LENGTH_SHORT).show();
-                    } else if (versonCode.equals("1") || versonCode.equals("2")) {
-                        JSONObject extension = result.optJSONObject("extension");
-                        String title = extension.optString("title");
-                        String content = extension.optString("content");
-                        String appUrl = extension.optString("url");
-                        //Toast.makeText(MainActivity.this, title + "-" + content, Toast.LENGTH_SHORT).show();
-                        //弹出升级提示框
-                        appUpdateDialog = UpdateDialogUtil.showUpdateDialog(MainActivity.this, title, content, versonCode.equals("2"), new UpdateDialogListener() {
-                            @Override
-                            public void confirmClick(UpdateDialog dialog) {
-                                dialog.showProgress();
-                            }
-
-                            @Override
-                            public void cancleClick(UpdateDialog dialog) {
-                                dialog.dismiss();
-                            }
-                        });
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void fail(String str) {
-                Toast.makeText(MainActivity.this, "fail", Toast.LENGTH_SHORT).show();
-            }
-        });
+        UpdateUtil.update(this, tmpurl);
     }
-
 
 
     @Override
