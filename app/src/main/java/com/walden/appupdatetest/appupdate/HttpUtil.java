@@ -64,7 +64,7 @@ public class HttpUtil {
 
     }
 
-    public static void getApk(final Activity activity, final String urlStr, final CallBack callBack) {
+    public static void getApk(final Activity activity, final String urlStr, final CallBack1 callBack) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -84,7 +84,7 @@ public class HttpUtil {
                             file.createNewFile();
                         }
                         FileOutputStream fos = new FileOutputStream(file);
-                        byte[] bytes = new byte[1024 * 100];
+                        byte[] bytes = new byte[1024 * 64];
                         int length;
                         int lengtsh = 0;
                         while ((length = is.read(bytes)) != -1) {
@@ -93,16 +93,17 @@ public class HttpUtil {
                             lengtsh += length;
                             callBack.process(lengtsh * 100 / totalLength);
                         }
+                        fos.flush();
+                        fos.close();
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if (totalLength == file.length()) {  //下载完毕
-                                    callBack.success("success");
+                                    callBack.success(file);
                                 }
                             }
                         });
-                        fos.flush();
-                        fos.close();
+
                     } else {
                         activity.runOnUiThread(new Runnable() {
                             @Override
@@ -116,7 +117,7 @@ public class HttpUtil {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            callBack.fail("IOException : "+ e.getMessage());
+                            callBack.fail("IOException : " + e.getMessage());
                         }
                     });
 
@@ -133,6 +134,14 @@ public class HttpUtil {
     interface CallBack {
 
         void success(String is);
+
+
+        void fail(String str);
+    }
+
+    interface CallBack1 {
+
+        void success(File file);
 
         void process(int a);
 

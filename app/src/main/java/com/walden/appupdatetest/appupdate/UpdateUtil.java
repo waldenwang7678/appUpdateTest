@@ -1,12 +1,15 @@
 package com.walden.appupdatetest.appupdate;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -55,10 +58,6 @@ public class UpdateUtil {
                 }
             }
 
-            @Override
-            public void process(int a) {
-
-            }
 
             @Override
             public void fail(String str) {
@@ -68,12 +67,17 @@ public class UpdateUtil {
     }
 
     public static void downloadApk(final Activity context, final UpdateDialog dialog, String url) {
-        HttpUtil.getApk(context, url, new HttpUtil.CallBack() {
+        HttpUtil.getApk(context, url, new HttpUtil.CallBack1() {
             @Override
-            public void success(String str) {  //下载完成
-                Log.d("asdasd", "success: " + str);
-                
+            public void success(File file) {  //下载完成
+                Log.d("asdasd", "success: ");
 
+                Intent intents = new Intent();
+                intents.setAction("android.intent.action.VIEW");
+                intents.addCategory("android.intent.category.DEFAULT");
+                intents.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                intents.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intents);
             }
 
             @Override
