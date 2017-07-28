@@ -81,7 +81,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         update_confirm.setOnClickListener(this);
         update_cancle.setOnClickListener(this);
 
-        if (dialogType) {
+        if (dialogType) { //强制升级
             update_cancle.setVisibility(View.GONE);
             middle_line.setVisibility(View.GONE);
             setCancelable(false);
@@ -112,7 +112,7 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
         }
     }
 
-    public void showProgress() {
+    public void changeStyle() {
         confirmLayout.setVisibility(View.GONE);
         progressLayout.setVisibility(View.VISIBLE);
         //progress_bar.setProgress(20);

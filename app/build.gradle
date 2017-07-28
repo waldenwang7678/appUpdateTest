@@ -6,18 +6,66 @@ android {
     defaultConfig {
         applicationId "com.walden.appupdatetest"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+    buildTypes {  //编译类型   最高优先级
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "Boolean", "ENVIRONMENT", "true"
+        }
+        debug {
+            //applicationIdSuffix ".debug"  //文件结尾字符
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "Boolean", "ENVIRONMENT", "false"
+        }
+        jnidebug {
+            initWith debug    //集成其他种类型
+
+            //在 applicationId 后面追加后缀, 这样可以在同一部设备上安装不同类型的 app (debug版和 release 版)
+            //applicationIdSuffix ".jnidebug"
+            jniDebuggable true
         }
     }
+
+    //其次优先级
+    // AndroidManifest.xml 其次
+    // 第三方库最低
+
+    productFlavors {  //渠道 / 风味(版本类型)  每 buildType 都会打出三种类型的 productFlavors 的包
+        baidu {}
+        demo {
+            applicationId "com.example.walden"
+            versionName "1.0-demo"
+        }
+        full {
+            applicationId "com.example.wang"
+            versionName "1.0-full"
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("mykey.jks")
+            storePassword "123456"
+            keyAlias "key0"
+            keyPassword "123456"
+        }
+        debug {
+//            storeFile file("mykey.jks")
+//            storePassword "123456"
+//            keyAlias "key0"
+//            keyPassword "123456"
+        }
+    }
+
 }
+
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

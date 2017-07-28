@@ -1,9 +1,10 @@
 package com.walden.appupdatetest.appupdate;
 
 import android.app.Activity;
+import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,7 +80,11 @@ public class HttpUtil {
                     final int totalLength = connection.getContentLength();
                     if (connection.getResponseCode() == 200) {
                         final InputStream is = connection.getInputStream();
-                        final File file = new File(activity.getApplication().getCacheDir() + "/app.apk");
+                        //apk 文件放置内部存储
+                        //final File file = new File(activity.getApplication().getCacheDir() ,"/app.apk");
+                        //文件放置外部存储
+                        final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "/app.apk");
+                        Log.d("asdasd", "run: " + file.getAbsolutePath());
                         if (!file.exists()) {
                             file.createNewFile();
                         }
@@ -134,7 +139,6 @@ public class HttpUtil {
     interface CallBack {
 
         void success(String is);
-
 
         void fail(String str);
     }

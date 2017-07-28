@@ -1,9 +1,8 @@
 package com.walden.appupdatetest.appupdate;
+
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -38,18 +37,6 @@ public class UpdateDialogUtil {
 //        lp.height = 300; // 高度
 //        lp.alpha = 0.7f; // 透明度
         window.setAttributes(lp);
-
-       /* DialogInterface.OnKeyListener keylistener = new DialogInterface.OnKeyListener() {
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-        dialog.setOnKeyListener(keylistener);
-*/
     }
 
     //设置 dialog 左右边距 (备用)

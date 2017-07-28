@@ -2,11 +2,9 @@ package com.walden.appupdatetest;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import com.walden.appupdatetest.appupdate.UpdateDialog;
 import com.walden.appupdatetest.appupdate.UpdateUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private UpdateDialog appUpdateDialog;
 
     //检查更新
     private void checkVerson() {
@@ -42,22 +39,6 @@ public class MainActivity extends AppCompatActivity {
         String tmpurl = type.length() > 0 ? url + "?updatetype=" + type : url;
 
         UpdateUtil.update(this, tmpurl);
-    }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (appUpdateDialog != null && appUpdateDialog.isShowing()) {
-                if (appUpdateDialog.isForceUpdate()) {
-                    return true;
-                }
-            }
-        }
-
-        return super.onKeyDown(keyCode, event);
-
-
+        boolean enviroment = BuildConfig.ENVIRONMENT;   //
     }
 }
