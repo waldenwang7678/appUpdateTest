@@ -1,7 +1,6 @@
 package com.walden.appupdatetest.appupdate;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,9 +8,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.walden.appupdatetest.MainActivity;
 import com.walden.appupdatetest.R;
 
 import org.json.JSONException;
@@ -25,6 +24,10 @@ import java.io.File;
  */
 
 public class UpdateUtil {
+
+    private static int notifyCode = 12321;
+    private static NotificationCompat.Builder builder;
+    private static NotificationManager manager;
 
     public static void update(final Activity context, String tmpurl) {
 
@@ -49,7 +52,12 @@ public class UpdateUtil {
                         UpdateDialogUtil.showUpdateDialog(context, title, content, versonCode.equals("2"), new UpdateDialogListener() {
                             @Override
                             public void confirmClick(UpdateDialog dialog) {
-                                dialog.changeStyle();
+                                if (dialog.isForceUpdate()) {  //强制升级
+                                    dialog.changeStyle();  //显示下载对话框
+                                } else {
+                                    dialog.dismiss();
+                                    initNotifyBar(context);
+                                }
                                 downloadApk(context, dialog, appUrl);
                             }
 
@@ -64,7 +72,6 @@ public class UpdateUtil {
                     e.printStackTrace();
                 }
             }
-
 
             @Override
             public void fail(String str) {
@@ -83,7 +90,6 @@ public class UpdateUtil {
                 intents.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
                 intents.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //context.startActivity(intents);
-                initRemoteView(context);
             }
 
             @Override
@@ -91,11 +97,19 @@ public class UpdateUtil {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //提示框下载进度
                         dialog.getProgresNum().setText(a + " %");
                         dialog.getProgressBar().setProgress(a);
+
+                        //通知栏下载进度
+                        if (builder != null && manager != null) {
+                            builder.setProgress(100, a, false);
+                            builder.setContentText(a + "%");
+                            manager.notify(notifyCode, builder.build());
+                        }
+
                     }
                 });
-
             }
 
             @Override
@@ -105,39 +119,22 @@ public class UpdateUtil {
         });
     }
 
-    private static void initRemoteView(Activity context) {
-//
-//            PendingIntent updatePendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, RemoteViews.class), 0);
-//            updateNotification.contentIntent = updatePendingIntent;
-//            //状态栏提醒内容
-//            updateNotification.contentView = new RemoteViews(context.getApplication().getPackageName(), R.layout.progress);
-//            updateNotification.contentView.setProgressBar(R.id.progressBar1, 100, 0, false);
-//            updateNotification.contentView.setTextViewText(R.id.textView1, "0%");
-//            // 发出通知
-//            updateNotificationManager.notify(0, updateNotification);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        NotificationManager updateNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pendingIntent=PendingIntent.getActivities(context,0,new Intent(context, RemoteViews.class),0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setTicker("版本更新");
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setContentText("正在下载");
-        builder.setContentTitle("下载");
-        builder.setWhen(System.currentTimeMillis());
-        Notification notification = builder.build();
-        notification.contentIntent=
+    private static void initNotifyBar(Activity context) {
 
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setContentTitle("下载");
-        builder.setContentText("正在下载");
-        final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(3, builder.build());
+        manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        builder = new NotificationCompat.Builder(context)
+                .setTicker("版本更新")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText("正在下载")
+                .setContentTitle("下载")
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(pendingIntent);
+
+        manager.notify(notifyCode, builder.build());
         builder.setProgress(100, 0, false);
 
-        new Thread(new Runnable() {
+       /* new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < 100; i++) {
@@ -159,7 +156,7 @@ public class UpdateUtil {
                 manager.notify(3, builder.build());
                 // manager.cancel(NO_3);//设置关闭通知栏
             }
-        }).start();
+        }).start();*/
 
     }
 }
