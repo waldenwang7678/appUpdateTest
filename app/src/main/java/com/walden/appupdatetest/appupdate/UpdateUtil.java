@@ -98,11 +98,11 @@ public class UpdateUtil {
                     @Override
                     public void run() {
                         //提示框下载进度
-                        dialog.getProgresNum().setText(a + " %");
-                        dialog.getProgressBar().setProgress(a);
-
-                        //通知栏下载进度
-                        if (builder != null && manager != null) {
+                        if (dialog.isForceUpdate()) {
+                            dialog.getProgresNum().setText(a + " %");
+                            dialog.getProgressBar().setProgress(a);
+                        }
+                        if (builder != null && manager != null) {//通知栏下载进度
                             builder.setProgress(100, a, false);
                             builder.setContentText(a + "%");
                             manager.notify(notifyCode, builder.build());
@@ -120,19 +120,21 @@ public class UpdateUtil {
     }
 
     private static void initNotifyBar(Activity context) {
+        if (manager == null) {
+            manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
 
-        manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
         builder = new NotificationCompat.Builder(context)
                 .setTicker("版本更新")
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText("正在下载")
+                //.setContentText("正在下载")
                 .setContentTitle("下载")
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(pendingIntent);
 
-        manager.notify(notifyCode, builder.build());
         builder.setProgress(100, 0, false);
+        manager.notify(notifyCode, builder.build());
 
        /* new Thread(new Runnable() {
             @Override
